@@ -5,7 +5,7 @@ Created on Wed Dec  7 09:30:45 2022
 @author: Zoe
 """
 path = []
-dir_dict_pt1 = {"//":0}
+dir_dict = {"//":0}
 listed_paths = set()
 newpath="y"
 
@@ -55,7 +55,7 @@ with open("Day 7.txt") as indata:
         #Listed directory
         elif command[0:3] == "dir" and newpath == "y":
             dir_path = pathstr(path) + "/" + command[4:]
-            dir_dict_pt1.update({dir_path : 0})
+            dir_dict.update({dir_path : 0})
             print("Encountered new directory: ", dir_path)
             print(path)
             
@@ -65,13 +65,21 @@ with open("Day 7.txt") as indata:
             current_path = pathstr(path)
             for x in range(len(path)):
                 path_string = pathstr(path[:x+1])
-                if path_string in dir_dict_pt1:
-                    dir_dict_pt1[path_string] = dir_dict_pt1[path_string] + int(newfile[0])
+                if path_string in dir_dict:
+                    dir_dict[path_string] = dir_dict[path_string] + int(newfile[0])
                     
 
 #Get all directories with file size < 100000, find the total file size (including duplicate files)
 answer1 = 0
-for size in dir_dict_pt1.values():
+for size in dir_dict.values():
     if size < 100000:
         answer1 = answer1 + size
- 
+        
+#Part 2
+free_space = 70000000 - dir_dict["//"]
+required = 30000000 - free_space
+candidates = dict()
+for x in dir_dict:
+    if dir_dict[x] > required:
+        candidates.update({x : dir_dict[x]})
+answer2 = min(set(candidates.values()))
