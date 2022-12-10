@@ -70,5 +70,58 @@ for f_row in range(forest.shape[0]):
             count_trees = count_trees + 1
             print(f_row, f_col)
             
+#Part 2: Counting visible trees from current tree ------------------------
+def count_west(tree_row, tree_col):
+    current_tree = forest[tree_row, tree_col]
+    count = 0
+    tree_pos = tree_col
+    tree_height = 0
+    while all([tree_pos > 0,  tree_height < current_tree]):
+        tree_pos = tree_pos - 1
+        count = count + 1
+        tree_height = forest[tree_row, tree_pos]
+    return count
 
-        
+def count_east(tree_row, tree_col):
+    current_tree = forest[tree_row, tree_col]
+    count = 0
+    tree_pos = tree_col
+    tree_height = 0
+    while all([tree_pos < forest.shape[1]-1,  tree_height < current_tree]):
+        tree_pos = tree_pos + 1
+        count = count + 1
+        tree_height = forest[tree_row, tree_pos]
+    return count
+
+def count_north(tree_row, tree_col):
+    current_tree = forest[tree_row, tree_col]
+    count = 0
+    tree_pos = tree_row
+    tree_height = 0
+    while all([tree_pos > 0,  tree_height < current_tree]):
+        tree_pos = tree_pos - 1
+        count = count + 1
+        tree_height = forest[tree_pos, tree_col]
+    return count
+
+def count_south(tree_row, tree_col):
+    current_tree = forest[tree_row, tree_col]
+    count = 0
+    tree_pos = tree_row
+    tree_height = 0
+    while all([tree_pos < forest.shape[1]-1,  tree_height < current_tree]):
+        tree_pos = tree_pos + 1
+        count = count + 1
+        tree_height = forest[tree_pos, tree_col]
+    return count
+
+import math
+scenic_score = 0
+
+for f_row in range(forest.shape[0]):
+    for f_col in range(forest.shape[1]):
+       score = math.prod([count_west(f_row, f_col),
+                          count_east(f_row, f_col),
+                          count_north(f_row, f_col),
+                          count_south(f_row, f_col)])
+       scenic_score = max(scenic_score, score)
