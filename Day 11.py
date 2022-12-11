@@ -48,7 +48,7 @@ def operation(monkey, old):
         new = old + 1
     return new
 
-conditions = [5,11,2,13,7,3,17,17]
+conditions = [5,11,2,13,7,3,17,19]
 throwtrue = [2,4,5,1,7,4,0,6]
 throwfalse = [3,7,3,5,6,1,2,0]
 import math
