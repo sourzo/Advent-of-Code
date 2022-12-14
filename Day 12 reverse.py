@@ -23,16 +23,16 @@ del map_list, line, indata
 map_overlay = np.zeros((map_array.shape[0], map_array.shape[1]))
 
 def isnext(current_letter, next_letter):
-    if next_letter == "S":
+    if next_letter == "E":
         return False
     else:
-        if next_letter == "E":
-            next_letter = "z"
-        if current_letter == "S":
-            current_letter = "a"
-        elif current_letter == "E":
+        if next_letter == "S":
+            next_letter = "a"
+        if current_letter == "E":
+            current_letter = "z"
+        elif current_letter == "a":
             return False
-        if az.index(next_letter) - az.index(current_letter) < 2:
+        if az.index(current_letter) - az.index(next_letter) < 2:
             return True
         else:
             return False
@@ -47,7 +47,7 @@ def add_coordinate(new_row, new_col, new_distance):
     #add it to the search queue
     search_queue.append((new_row, new_col, new_distance)) 
     #Check if it is the end node
-    if map_array[new_row, new_col] == "E":
+    if map_array[new_row, new_col] == "a":
         is_finished = True
         final_distance = new_distance
 
@@ -69,8 +69,8 @@ def get_next(map_row, map_col, distance):
         if map_overlay[map_row - 1, map_col] == 0 and isnext(map_array[map_row, map_col], map_array[map_row - 1, map_col]):
             add_coordinate(map_row - 1, map_col, distance + 1)
 
-search_queue = [(np.where(map_array=="S")[0][0], #row
-                 np.where(map_array=="S")[1][0], #col
+search_queue = [(np.where(map_array=="E")[0][0], #row
+                 np.where(map_array=="E")[1][0], #col
                  0)]                             #distance
 
 is_finished = False
