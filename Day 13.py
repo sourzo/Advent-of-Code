@@ -22,23 +22,23 @@ def compare(obj1, obj2):
         #integer to integer
         elif type(obj1[x]) == int and type(obj2[x]) == int:
             if obj1[x] < obj2[x]:
-                print("Outcome 1a")
+                #print("Outcome 1a")
                 return True
             elif obj1[x] > obj2[x]:
-                print("Outcome 1b")
+                #print("Outcome 1b")
                 return False
         #list to list, or mix
         else:
-            print("Outcome 2")
+            #print("Outcome 2")
             if compare(obj1[x], obj2[x]) is not None:
                 return compare(obj1[x], obj2[x])
 
     #run out of items in obj1
     if len(obj1) < len(obj2):
-        print("Outcome 3a")
+        #print("Outcome 3a")
         return True
     elif len(obj1) > len(obj2):
-        print("Outcome 3b")
+        #print("Outcome 3b")
         return False
         
 count = 0
@@ -49,3 +49,17 @@ for y in range(0,len(message),2):
     if compare(message[y],message[y+1]) == True:
         answer1 = answer1 + count
 del count, y
+
+count_2 = 1
+count_6 = 2
+for x in range(len(message)):
+    print(message[x])
+    print(compare(message[x],[[2]]))
+    print(compare(message[x],[[6]]))
+    if compare(message[x],[[2]]) == True:
+        count_2 = count_2 + 1
+        count_6 = count_6 + 1
+    elif compare(message[x],[[6]]) == True:
+        count_6 = count_6 + 1
+        
+answer2 = count_2*count_6
