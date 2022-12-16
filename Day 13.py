@@ -4,11 +4,12 @@ Created on Wed Dec 14 18:26:34 2022
 
 @author: Zoe
 """
+import ast
 message = list()
 with open("Day 13.txt","r") as indata:
     for line in indata:
         if line.strip() != "":
-            message.append(eval(line.strip()))
+            message.append(ast.literal_eval(line.strip()))
 del indata, line
 
 def compare(obj1, obj2):
