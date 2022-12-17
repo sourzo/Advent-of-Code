@@ -64,15 +64,6 @@ del sensor, hor_dist, interval_min, interval_max, s, target_line
 #into set_of_points, which is worst-case 4,000,000 points added 29 times for each line,
 
 import portion as p
-#Combine two closed intervals
-def combine(i1, i2):
-    if i1 != p.empty():
-        if i1.lower == i2.upper + 1:
-            return i1 | p.closed(i2.lower, i2.upper + 1)
-        elif i2.lower == i1.upper + 1:
-            return i2 | p.closed(i1.lower, i1.upper + 1)
-        else:
-            return i1 | i2
 
 size = 4000000
 
