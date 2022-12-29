@@ -4,10 +4,11 @@ Created on Sat Dec 17 23:20:52 2022
 
 @author: Zoe
 """
-import math
+#Create flow_rates - list of valves and flow rates
+#Create neighbours - list of valves and neighbouring valves
 flow_rates = dict()
 neighbours = dict()
-with open("Day 16.txt","r") as indata:
+with open("Day 16.txt", "r") as indata:
     for line in indata:
         line = line.strip().split()
         flow_rates[line[1]] = int(line[4][5:-1])
@@ -15,7 +16,7 @@ with open("Day 16.txt","r") as indata:
         for x in range(len(neighbours[line[1]])):
             neighbours[line[1]][x] = neighbours[line[1]][x][0:2]
 
-#list all tunnel names
+#list all valves
 del indata, line, x
 valve_names = list()
 for valve in neighbours:
@@ -24,6 +25,7 @@ del valve
 
 #create distance matrix for flow_rates
 #use BFS
+#use valve_names for indexing this distance matrix
 import numpy as np
 
 distmat = np.zeros((len(neighbours),len(neighbours)))
@@ -48,18 +50,6 @@ for start in valve_names:
 
 del dist, start, valve
 
-#calculate potential flow at time t
-#def calculate_potential(current_valve, current_time):
-#    future_flow = dict()
-#    for valve in flow_rates:
-#        future_flow[valve] = int((30 - (distmat[valve_names.index(current_valve), valve_names.index(valve)] + 1 + current_time)) * flow_rates[valve])
-#    return future_flow
-#test = calculate_potential("DD",2)
-# === maybe want to only include valves not already open?
-
-#def calculate_total(current_valve, next_valve, current_time):
-#    return int((30 - (distmat[valve_names.index(current_valve), valve_names.index(next_valve)] + 1 + current_time)) * flow_rates[next_valve])
-
 #list all valves with nonzero flow
 unopened_valves = list()
 for x in flow_rates:
@@ -67,29 +57,35 @@ for x in flow_rates:
         unopened_valves.append(x)
 del x
 
-def create_path(best, valve_order):
-    pressure = 0
-    time = 0
-    current_valve = "AA"
-    for x in valve_order:
-        #go to the valve
-        time = time + distmat[valve_names.index(current_valve),
-                              valve_names.index(x)]
-        #open the valve
-        time = time + 1        
-        #pressure changes
-        pressure = pressure + int((30-time)*flow_rates[x])
-        #new current valve
-        current_valve = x
-    best = max(best, pressure)
-    return best
+#Backtracking - using recursion
 
-from itertools import permutations
-perm = permutations(unopened_valves)
-best_pressure = 0
-count = 0
-searchspace = math.factorial(len(unopened_valves))
-for i in list(perm):
-    print(round(count/searchspace,4))
-    count = count + 1
-    best_pressure = max(create_path(best_pressure, i), best_pressure)
+max_pressure = 0
+def open_valve(unopened, opened, pressure, time):
+    global max_pressure
+    for next in unopened:
+        new_unopened_list = [x for x in unopened if x != next]
+        new_opened_list = opened + [next]
+        new_time = time + distmat[valve_names.index(new_opened_list[-1]),
+                                  valve_names.index(new_opened_list[-2])]
+        if new_time < 30:
+            #open the valve
+            new_time = new_time + 1
+            #pressure changes
+            new_pressure = pressure + int((30-new_time)*flow_rates[next])
+
+        else:
+            new_unopened_list = []
+            new_pressure = pressure
+
+        if len(new_unopened_list) == 0:
+            max_pressure = max(max_pressure, new_pressure)
+            print(new_opened_list, max_pressure, new_pressure, new_time)
+
+        else:
+            open_valve(new_unopened_list, new_opened_list, new_pressure, new_time)
+
+    return max_pressure
+
+open_valve(unopened_valves, ["AA"], 0, 0)
+
+#Part 2 - Human and elephant working in tandem, max time 26 min---------------------------------------------------------
