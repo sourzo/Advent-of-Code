@@ -64,3 +64,75 @@ print("vertical")
 total += count_horizontal(transpose(grid))      # vertical in original grid
 print("total")
 print(total)
+
+#Part 2 - "It's an X-MAS problem!" --------------------------------------------
+# M M   M S   S M   S S  |
+#  A     A     A     A   | <- Looking for any of these four patterns in the grid
+# S S   M S   S M   M M  |
+
+def x_mas_mas(i, j):
+    if grid[i][j] != "M":
+        return False
+    if grid[i][j+2] != "M":
+        return False
+    if grid[i+1][j+1] != "A":
+        return False
+    if grid[i+2][j] != "S":
+        return False
+    if grid[i+2][j+2] != "S":
+        return False
+    return True
+
+def x_mas_sam(i, j):
+    if grid[i][j] != "M":
+        return False
+    if grid[i][j+2] != "S":
+        return False
+    if grid[i+1][j+1] != "A":
+        return False
+    if grid[i+2][j] != "M":
+        return False
+    if grid[i+2][j+2] != "S":
+        return False
+    return True
+
+
+def x_sam_mas(i, j):
+    if grid[i][j] != "S":
+        return False
+    if grid[i][j+2] != "M":
+        return False
+    if grid[i+1][j+1] != "A":
+        return False
+    if grid[i+2][j] != "S":
+        return False
+    if grid[i+2][j+2] != "M":
+        return False
+    return True
+
+
+def x_sam_sam(i, j):
+    if grid[i][j] != "S":
+        return False
+    if grid[i][j+2] != "S":
+        return False
+    if grid[i+1][j+1] != "A":
+        return False
+    if grid[i+2][j] != "M":
+        return False
+    if grid[i+2][j+2] != "M":
+        return False
+    return True
+
+count_xmas = 0
+for i in range(height-2):
+    for j in range(width-2):
+        if x_mas_mas(i,j):
+            count_xmas += 1
+        elif x_mas_sam(i,j):
+            count_xmas += 1
+        elif x_sam_mas(i,j):
+            count_xmas += 1
+        elif x_sam_sam(i,j):
+            count_xmas += 1
+print(count_xmas)
