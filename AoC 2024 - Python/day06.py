@@ -1,4 +1,6 @@
 from enum import Enum
+import logging
+import time
 
 with open("Day06.txt","r") as indata:
     data_raw = indata.readlines()
@@ -152,11 +154,10 @@ class Guard:
         """Moves the guard to the next object in front of them, 
         and then rotates them if they are not at the wall."""
         distance_to_next_object = self.distance_to_next_object()
-        #print("Distance: " + str(distance_to_next_object))
+        logging.info("Distance: " + str(distance_to_next_object))
         if distance_to_next_object > 0:
            self.move_forward_faster(distance_to_next_object)
-           #print("Position =", end = " ")
-           #print(self.position)
+           logging.info("Position = {}".format(self.position))
            self.visited_locations_count.setdefault(self.position, 0)
            self.visited_locations_count[self.position] += 1
         if self.immediately_in_front() is None:
@@ -199,9 +200,11 @@ def test_guard(guard):
 count_loops = 0
 progress = 0
 # For each free space, try putting an object there and see if it traps the guard in a loop
+t0 = time.time()
 for row in range(len(data_raw)):
     for col in range(len(data_raw[row])):
         progress += 1
+        logging.info("({},{})".format(row, col))
         if data_raw[row][col] == ".":
             data_raw[row] = data_raw[row][:col] + "#" + data_raw[row][col+1:]   # put the object there
             guard = Guard(data_raw)                                             # drop in a new guard
@@ -209,3 +212,5 @@ for row in range(len(data_raw)):
             data_raw[row] = data_raw[row][:col] + "." + data_raw[row][col+1:]   # remove the object again
 
 print("Number of ways to create loops: " + str(count_loops))
+t1 = time.time()
+print(t1-t0)
