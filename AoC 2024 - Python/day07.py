@@ -3,7 +3,7 @@ import itertools as it
 from enum import Enum
 import time
 
-with open("day07example.txt", "r") as input:
+with open("day07.txt", "r") as input:
     raw_data = input.readlines()
 
 test_data = dict()
@@ -62,21 +62,11 @@ class Operator(Enum):
         else:
             return int(str(x) + str(y))
 
-def check_bounds_3operators(target: int, operands: list[int]):
-    """Checks the upper and lower bounds for what can be produced using the operands.
-    If the target value is smaller than the sum of all the operands, it returns False.
-    If the target value is larger than the concatenation of all the operands-as-strings,
-    it returns False."""
-    return False if target < sum(operands) | target > int("".join([str(n) for n in operands])) else True
-
 def check_mult_add_concat(target: int, operands: list[int]):
-    """Checks every permutation of adding and multiplying the values in the list.
-    It does this by generating binary numbers, where 0 represents addition and 1
-    represents multiplication. By generating all binary numbers of the length of
-    the number of operators, you check all permutations."""
-    if not check_bounds_3operators(target, operands):
-        return False
-    print(f"Target = {target}")
+    """Checks every permutation of adding, multiplying and concatenating the values in the list.
+    It does this by generating ternary numbers, where 0 represents addition, 1
+    represents multiplication, and 2 represents concatenation. By generating all 
+    ternary numbers of the length of the number of operators, you check all permutations."""
     size = len(operands)
     permutations = it.product(range(3), repeat=size-1)
     
