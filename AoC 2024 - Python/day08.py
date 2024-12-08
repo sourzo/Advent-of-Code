@@ -20,10 +20,16 @@ for row, line in enumerate(data):
             antenna_locations[item].append((row, col))
 
 def find_antinodes(antenna1: tuple, antenna2: tuple):
-    antinode_row_dist = antenna2[0] - antenna1[0] # 2-1 = 1
+    """Finds the antinodes for a pair of antennas.
+    
+    For each pair of antennas (of the same type), let d be the distance between them.
+    Imagine a line drawn through the antennas. On either side of the pair of antennas, at
+    a distance d from the nearest antenna, is an antinode. This function adds those antinodes
+    to the set of all known antinodes."""
+    antinode_row_dist = antenna2[0] - antenna1[0]
     antinode1_row = antenna2[0] + antinode_row_dist
     antinode2_row = antenna1[0] - antinode_row_dist
-    antinode_col_dist = antenna2[1] - antenna1[1] # 5-8 = -3
+    antinode_col_dist = antenna2[1] - antenna1[1]
     antinode1_col = antenna2[1] + antinode_col_dist
     antinode2_col = antenna1[1] - antinode_col_dist
 
@@ -32,7 +38,48 @@ def find_antinodes(antenna1: tuple, antenna2: tuple):
     if antinode2_row in range(0, height) and antinode2_col in range(0, width):
         antinode_locations.add((antinode2_row, antinode2_col))
 
+#Antinodes appear between pairs of antennas of the same value,
+# so this considers all pairwise combinations of each antenna type
 for locations in antenna_locations.values():
     for loc in combinations(locations, 2):
         find_antinodes(loc[0],loc[1])
+print(len(antinode_locations))
+
+#Part 2 --------------------------------------------------------------------------
+
+def find_all_antinodes(antenna1: tuple, antenna2: tuple):
+    """Finds *all* antinodes for a pair of antennas.
+    
+    For each pair of antennas (of the same type), let d be the distance between them.
+    Imagine a line drawn through the antennas. On either side of the pair of antennas, at
+    a distance k*d from the nearest antenna, is an antinode, for every integer k. 
+    This function adds those antinodes to the set of all known antinodes, provided they
+    appear within the bounds of the map."""
+    antinode_row_dist = antenna2[0] - antenna1[0]
+    antinode_col_dist = antenna2[1] - antenna1[1]
+
+    #all antinodes outwards from antenna2
+    row = antenna2[0]
+    col = antenna2[1]
+    k = 0
+    while row in range(0, height) and col in range (0, width):
+        antinode_locations.add((row, col))
+        k += 1
+        row = antenna2[0] + k*antinode_row_dist
+        col = antenna2[1] + k*antinode_col_dist
+
+    #all antinodes outwards from antenna1
+    row = antenna1[0]
+    col = antenna1[1]
+    k = 0
+    while row in range(0, height) and col in range (0, width):
+        antinode_locations.add((row, col))
+        k += 1
+        row = antenna1[0] - k*antinode_row_dist
+        col = antenna1[1] - k*antinode_col_dist
+
+#As before: Consider all pairwise combinations for each type of antenna, and find all antinodes.
+for locations in antenna_locations.values():
+    for loc in combinations(locations, 2):
+        find_all_antinodes(loc[0],loc[1])
 print(len(antinode_locations))
