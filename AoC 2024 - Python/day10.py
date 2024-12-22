@@ -1,6 +1,15 @@
 with open("Day10example.txt","r") as input:
     map = [[int(n) for n in line if n !="\n"] for line in input.readlines()]
 
+# A trailhead has height 0. A peak has height 9.
+# A trail starts at 0 and goes 0,1,2,3,4,5,6,7,8,9.
+# The score of a trailhead is the number of peaks reachable from the trailhead.
+# The rating of a trailhead is the number of trails which start there.
+
+# Part 1: What's the sum of scores of all trailheads?
+
+# Part 2: What's the sum of ratings of all trailheads (i.e. total number of trails)?
+
 lat_max = len(map) - 1
 lon_max = len(map[0]) - 1
 
@@ -21,7 +30,7 @@ def expand_search(i,j):
 
 def hike(search, x, y):
     """Finds all locations accessible from the location with coordinate (x,y)
-    and updates the dict called 'search'"""
+    and updates th input dict"""
     current_value = map[x][y]
     if current_value == 9:
         return
@@ -32,15 +41,15 @@ def hike(search, x, y):
 
 #Count the number of 9s which are accessible from each zero
 #Sum these up
-trails = 0
+count_peaks = 0
 for i in range(lat_max+1):
     for j in range(lon_max+1):
-        current_value = map[i][j]
-        if current_value == 0:
+        current_height = map[i][j]
+        if current_height == 0:
             #Create a dict called 'search' with key = numeric value on map, 
             # and value = set of coordinates where the hiker can go next
             search: dict[int,set[tuple]] = dict()
             hike(search, i,j)
-            trails += len(search[9])
-
-print(trails)
+            count_peaks += len(search[9])
+#Part 1
+print(count_peaks)
