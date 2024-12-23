@@ -10,10 +10,11 @@ def get_input(infile: str):
 # Create a graph
 G = nx.Graph()
 G.add_edges_from(get_input("Day23.txt"))
+all_cliques = list(nx.find_cliques(G))
 
 # Find all unique 3-cliques
 three_cliques = set()
-for clique in list(nx.find_cliques(G)):
+for clique in all_cliques:
     if len(clique) > 2:
         #Store as a sorted tuple so it's easy to check uniqueness
         sub_3_cliques = list(sorted(x) for x in it.combinations(clique, r=3))
@@ -25,3 +26,11 @@ for clique in list(nx.find_cliques(G)):
                     three_cliques.add(tuple(x for x in c))
                     break
 print(len(three_cliques))
+
+#Part 2 ------------
+G = nx.Graph()
+G.add_edges_from(get_input("Day23example.txt"))
+length = (max(len(x) for x in all_cliques))
+for x in all_cliques:
+    if len(x) == length:
+        print(",".join(sorted(x)))
