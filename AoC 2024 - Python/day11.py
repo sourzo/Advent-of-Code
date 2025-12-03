@@ -1,5 +1,3 @@
-import time
-
 # Rules for the stones (First applicable rule in this list):
 # 1) A zero becomes a 1
 # 2) An even number of digits is split in two

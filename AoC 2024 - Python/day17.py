@@ -93,3 +93,37 @@ def check_outputs():
         if x != y:
             return False
     return True
+
+# registerA = 117440
+# registerB = 0
+# registerC = 0
+# instruction_pointer = 0
+# outputs = []
+# program = [0,3,5,4,3,0]
+# print("START TEST")
+# while instruction_pointer < len(program):
+#     print(f"Pointer: {instruction_pointer}, Opcode = {program[instruction_pointer]}, Operand = {program[instruction_pointer + 1]}")
+#     operator(instruction_pointer)
+#     print([registerA, registerB, registerC])
+
+if test:
+    program = [0,3,5,4,3,0]
+i=0
+while i < 1_000_000_000_000:
+    i+=1
+    if i%100_000 == 0:
+        print(i)
+    registerA = i
+    registerB = 0
+    registerC = 0
+    instruction_pointer = 0
+    outputs = []
+    while instruction_pointer < len(program):
+        operator(instruction_pointer)
+        if not check_outputs():
+            if debug:
+                print(f"i = {i}, op = {outputs}")
+            break
+    if outputs == program:
+        print(f"Winner! {i}")
+        break

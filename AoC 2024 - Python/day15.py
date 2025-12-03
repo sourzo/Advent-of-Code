@@ -62,7 +62,7 @@ def push(from_pos: tuple[int, int], to_dir: Direction):
     """Moves the item in front forward (possibly pushing other items forward first).
     If the item in front is a wall (#) then the item won't move, and the wall won't move.
     
-    Returns the position of the item after the move"""
+    Returns the position of the item doing the pushing after the move"""
     item_in_front = get_item_in_front(to_dir, from_pos)
     pos_in_front = position_in_front(to_dir, from_pos)
     if item_in_front == "#":
@@ -70,7 +70,7 @@ def push(from_pos: tuple[int, int], to_dir: Direction):
         return from_pos
     elif item_in_front == ".":
         #Nothing to push, just move forward
-        return move_forward(from_pos, to_dir)
+        return move_forward(from_pos, to_dir)       
     elif pos_in_front is not None:
         #Push the item in front
         #If it moves forward and leaves a space, then the item will move forward.
@@ -78,7 +78,6 @@ def push(from_pos: tuple[int, int], to_dir: Direction):
         return move_forward(from_pos, to_dir)
     else:
         return from_pos
-
 
 def get_direction(s: str):
     if s == "<":
@@ -128,3 +127,5 @@ for idx, row in enumerate(map):
             new_map[idx].extend([".."])
         elif item == "@":
             new_map[idx].extend(["@."])
+
+def move_wide_box(dir: Direction):
