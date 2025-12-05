@@ -67,6 +67,22 @@ CAN HAS STRING?
             VISIBLE "THERE FIEL"                BTW file opened
     OIC
     
+    BTW An important bit of metaprogramming! SRS turns a value into a var name
+    I HAS A SRS "fjsnfgosngj" ITZ 123
+    VISIBLE "SRS returns " AN fjsnfgosngj
+
+    BTW The BUKKIT (array)
+    I HAS A book ITZ A BUKKIT
+    book HAS A pageCount ITZ 300
+    book HAS A bookmark ITZ 144
+    book HAS A title ITZ "Famous Cats of History"
+
+    O HAI IM book
+        I HAS A pageCount ITZ 300
+        I HAS A bookmark ITZ 1
+        I HAS A title ITZ "Famous Cats of History"
+    KTHX
+
     BTW The STRING package
     BTW Length
     VISIBLE I IZ STRING'Z LEN YR "PsPsPs"
