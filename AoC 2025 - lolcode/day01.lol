@@ -3,7 +3,7 @@ CAN HAS STDIO?
 CAN HAS STRING?
  
 BTW Open file
-I HAS A readFile ITZ I IZ STDIO'Z OPEN YR "TREATZ/1" AN YR "r" MKAY
+I HAS A readFile ITZ I IZ STDIO'Z OPEN YR "NOMNOMZ/1" AN YR "r" MKAY
 I IZ STDIO'Z DIAF YR readFile MKAY
 O RLY?
 	YA RLY
@@ -11,9 +11,12 @@ O RLY?
 	NO WAI
 		VISIBLE "Successfully opened the file for reading"
 OIC
+BTW Assign the whole contents of the file to a YARN
 I HAS A contents ITZ I IZ STDIO'Z LUK YR readFile AN YR 99999 MKAY
 
+BTW Loop through the YARN character-by-character and assign to BUKKITZ
 I HAS A INSTRUKSHUNZ ITZ A BUKKIT
+INSTRUKSHUNZ HAS A LENGTH ITZ 0
 INSTRUKSHUNZ HAS A DIREKSHUNZ ITZ A BUKKIT
 INSTRUKSHUNZ HAS A KLIKZ ITZ A BUKKIT
 INSTRUKSHUNZ'Z KLIKZ HAS A SRS "-1" ITZ "-1"
@@ -32,6 +35,7 @@ IM IN YR loop UPPIN YR position TIL BOTH SAEM position AN endLoop
             newLine R WIN
 
             INSTRUKSHUNZ'Z DIREKSHUNZ HAS A SRS index ITZ char
+            INSTRUKSHUNZ'Z LENGTH R SUM OF index AN 1 
             GTFO
         OMG "1"
         OMG "2"
@@ -54,8 +58,29 @@ IM IN YR loop UPPIN YR position TIL BOTH SAEM position AN endLoop
 IM OUTTA YR loop
 INSTRUKSHUNZ'Z KLIKZ'Z SRS index IS NOW A NUMBR
 
+BTW Onto the actual problem
+I HAS A dialPosition ITZ 50
+I HAS A idx ITZ 0
+I HAS A zeroCount ITZ 0
+IM IN YR instructionsLoop UPPIN YR idx WILE DIFFRINT idx AN BIGGR OF idx AN INSTRUKSHUNZ'Z LENGTH 
+    VISIBLE INSTRUKSHUNZ'Z DIREKSHUNZ'Z SRS idx
+    INSTRUKSHUNZ'Z DIREKSHUNZ'Z SRS idx, WTF?
+        OMG "R"
+            dialPosition R MOD OF SUM OF dialPosition AN INSTRUKSHUNZ'Z KLIKZ'Z SRS idx AN 100
+            GTFO
+        OMG "L"
+            dialPosition R MOD OF DIFF OF dialPosition AN INSTRUKSHUNZ'Z KLIKZ'Z SRS idx AN 100
+            DIFFRINT 0 AN SMALLR OF 0 AN dialPosition, O RLY?
+                YA RLY, dialPosition R SUM OF dialPosition AN 100
+            OIC
+            GTFO
+    OIC
+    VISIBLE dialPosition
+    BOTH SAEM dialPosition AN 0, O RLY?
+        YA RLY, zeroCount R SUM OF zeroCount AN 1
+    OIC
+IM OUTTA YR instructionsLoop
 
-
-
+VISIBLE zeroCount
 
 KTHXBYE
