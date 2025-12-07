@@ -57,11 +57,13 @@ IM IN YR readLoop UPPIN YR position TIL BOTH SAEM position AN endLoop
             GTFO
     OIC
 IM OUTTA YR readLoop
+
+I HAS A varName ITZ SMOOSH RANGES'Z length AN "_max" MKAY
+RANGES HAS A SRS varName ITZ numCache
+RANGES'Z SRS varName R MAEK RANGES'Z SRS varName A NUMBR
+
 VISIBLE "... finished parsing."
 
-
-VISIBLE "Computing..."
-BTW Loop over all the ranges in the input
 
 OBTW
 I only need to check substrings which divide the string
@@ -120,6 +122,9 @@ IF U SAY SO
 
 HOW IZ I exactlyTwoRepeatsIn YR yarn
     I HAS A yarnLength ITZ I IZ STRING'Z LEN YR yarn MKAY
+    BOTH SAEM yarnLength AN 1, O RLY?
+        YA RLY, FOUND YR WIN
+    OIC
     I HAS A subyarnLength ITZ QUOSHUNT OF yarnLength AN 2
     BOTH SAEM yarnLength AN PRODUKT OF subyarnLength AN 2, O RLY?
         YA RLY
@@ -133,6 +138,8 @@ IF U SAY SO
 
 I HAS A invalidIdSum ITZ 0
 
+VISIBLE "Computing part 1..."
+BTW Loop over all the ranges in the input
 IM IN YR rangesLoop UPPIN YR rangesIdx TIL BOTH SAEM rangesIdx AN RANGES'Z length 
     I HAS A minOffset ITZ RANGES'Z SRS SMOOSH rangesIdx AN "_min" MKAY
     BTW Loop over the numbers in that range (inclusive)
@@ -146,7 +153,30 @@ IM IN YR rangesLoop UPPIN YR rangesIdx TIL BOTH SAEM rangesIdx AN RANGES'Z lengt
         OIC
     IM OUTTA YR numberLoop
 IM OUTTA YR rangesLoop
-VISIBLE "Answer: " AN invalidIdSum
+VISIBLE "Answer for part 1: " AN invalidIdSum
+
+BTW Part 2
+
+I HAS A newInvalidIdSum ITZ 0
+
+VISIBLE "Computing part 2..."
+IM IN YR rangesLoop UPPIN YR rangesIdx TIL BOTH SAEM rangesIdx AN SUM OF RANGES'Z length AN 1
+    VISIBLE "idx: " AN rangesIdx
+    I HAS A minOffset ITZ RANGES'Z SRS SMOOSH rangesIdx AN "_min" MKAY
+    BTW Loop over the numbers in that range (inclusive)
+    IM IN YR numberLoop UPPIN YR i TIL BOTH SAEM SUM OF i AN minOffset AN SUM OF RANGES'Z SRS SMOOSH rangesIdx AN "_max" MKAY AN 1
+        I HAS A numChar ITZ SUM OF i AN minOffset
+        numChar IS NOW A YARN
+        I IZ areThereAnyRepeatsIn YR numChar MKAY
+        O RLY?
+            YA RLY
+                VISIBLE numChar
+                newInvalidIdSum R SUM OF SUM OF i AN minOffset AN newInvalidIdSum
+        OIC
+    IM OUTTA YR numberLoop
+IM OUTTA YR rangesLoop
+VISIBLE "Answer for part 2: " AN newInvalidIdSum
+
 VISIBLE "... done."
 
 KTHXBYE
