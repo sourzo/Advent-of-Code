@@ -21,6 +21,9 @@ CAN HAS STRING?
     VISIBLE SUM OF var AN 5
     BTW Concatenation
     VISIBLE SMOOSH "The sum of 2 and 8 is " AN 10 MKAY
+    BTW VISIBLE doesn't need the SMOOSH
+    VISIBLE "The sum of 2 and 8 is " AN 10 MKAY
+
 
     BTW class definition
     O HAI IM className
@@ -37,7 +40,11 @@ CAN HAS STRING?
 
     BTW call function
     I IZ FUNCTION_NAME YR 2 AN YR 3 MKAY
-    BTW Use MKAY at the end of non-simple statements, e.g. more than one argument, or a function within a function (eg VISIBLE I IZ...)
+
+    OBTW - "MKAY"
+    Use MKAY at the end of SMOOSH statements and at the end of function calls
+    Confusingly (I think so anyway), you don't use MKAY after operators
+    TLDR
 
     BTW use a function from a package or class
     BTW The new line character is a smiley :) as shown in lots of print statements below
