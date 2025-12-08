@@ -80,6 +80,16 @@ CAN HAS STRING?
         NO WAI
             VISIBLE "THERE FIEL"                BTW file opened
     OIC
+
+    OBTW
+    STDIO has the following functions:
+        OPEN - open a file
+        DIAF - check for error (WIN/FAIL)
+        LUK - read a file
+        SCRIBBEL - write to a file
+        AGEIN - reset the file pointer to the beginning (Calls C's rewind function)
+        CLOSE - close a file
+    TLDR
     
     BTW An important bit of metaprogramming! SRS turns a value into a var name
     VISIBLE ":)Testing the SRS token to see what it does..."
@@ -124,11 +134,25 @@ CAN HAS STRING?
     VISIBLE squareNumbersArray'Z SRS 4
 
     VISIBLE ":)The STRING package"
-    BTW The STRING package
+    BTW The STRING package only has 2 functions:
     BTW Length
-    VISIBLE I IZ STRING'Z LEN YR "PsPsPs" MKAY
+    VISIBLE "Length: " AN I IZ STRING'Z LEN YR "PsPsPs" MKAY
     BTW Index from 0
-    VISIBLE I IZ STRING'Z AT YR "Whiskas" AN YR 1 MKAY
-    BTW This slice doesn't work for me but I've seen it in code:
-    BTW I IZ STRING'Z SLICE YR "StringThing" AN YR 0 AN YR 5 MKAY
+    VISIBLE "Character 1: " AN I IZ STRING'Z AT YR "Whiskas" AN YR 1 MKAY
+
+    OBTW 
+    STDLIB: Random numbers (kinda)
+    
+    The BLOW function generates the next pseudo-random number in a sequence.
+    The MIX function sets a seed to change the starting point of the sequence. 
+    TLDR
+    VISIBLE STDLIB'Z I IZ BLOW YR 12 MKAY   BTW Gives a random number up to 12
+    VISIBLE STDLIB'Z I IZ MIX YR 12 MKAY    BTW Sets a seed for the random number
+
+OBTW
+Open problems
+
+How on earth do you square-root... Power series maybe??!?
+TLDR
+
 KTHXBYE
