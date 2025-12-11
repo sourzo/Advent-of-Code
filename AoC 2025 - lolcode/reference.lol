@@ -1,11 +1,14 @@
 HAI 1.3
-CAN HAS STDIO? BTW Loads the module. Except I'm not sure it does?
-CAN HAS STRING?
+    CAN HAS STDIO? BTW Loads the module. Except I'm not sure it does?
+    CAN HAS STRING?
+    CAN HAS STDLIB?
     BTW This is a single-line comment
 
-    OBTW This is a comment block
+    OBTW 
+    This is a comment block
     Look at it, wheeee
     TLDR
+
 
     BTW declare a variable
     I HAS A var ITZ A YARN
@@ -22,8 +25,13 @@ CAN HAS STRING?
     BTW Concatenation
     VISIBLE SMOOSH "The sum of 2 and 8 is " AN 10 MKAY
     BTW VISIBLE doesn't need the SMOOSH
-    VISIBLE "The sum of 2 and 8 is " AN 10 MKAY
+    VISIBLE "The sum of 2 and 8 is " AN 10
 
+    BTW Whitespace does not matter but it's polite to indent
+    BTW Escape character is colon
+    BTW Generally statements go on one line, but you can use a comma to put more than one statement on a line:
+    BTW (Each VISIBLE command prints on a new line)
+    VISIBLE "Look here's something:: ", I HAS A x ITZ 23, VISIBLE x
 
     BTW class definition
     O HAI IM className
@@ -73,13 +81,24 @@ CAN HAS STRING?
     I HAS A inputPath ITZ "TREATZ/1"
     I HAS A readFile ITZ I IZ STDIO'Z OPEN YR inputPath AN YR "r" MKAY
     BTW Check it worked
-    I IZ STDIO'Z DIAF YR readFile MKAY          BTW DIAF = Die In A Fire. Lovely! Returns WIN/FAIL depending on whether the file failed to open
+    I IZ STDIO'Z DIAF YR readFile MKAY          BTW DIAF = Die In A Fire. Lovely! Returns WIN/FAIL depending on whether there is an error
     O RLY?                                      BTW WIN/FAIL test on the last unassigned expression (which is the line above this one)
-        YA RLY
-            VISIBLE "WHERE FIEL"                BTW file not found
-        NO WAI
-            VISIBLE "THERE FIEL"                BTW file opened
+        YA RLY, VISIBLE "WHERE FIEL"                BTW file not found
+        NO WAI, VISIBLE "THERE FIEL"                BTW file opened
     OIC
+
+    	I HAS A output ITZ "a,b,c,3:)d,e,f,5:)g,h,i,8"
+	I HAS A writeFile ITZ I IZ STDIO'Z OPEN YR "TOYZ/BITZ_OF_YARN/writeOut" AN YR "w" MKAY
+                                                            BTW ^^^ Open file for writing
+    BTW Writing to a file
+	I IZ STDIO'Z DIAF YR writeFile MKAY, O RLY?             BTW Check for errors
+        YA RLY, VISIBLE "WHERE FIEL"                        BTW file not found
+        NO WAI, VISIBLE "THERE FIEL"                        BTW file opened
+	OIC
+	I IZ STDIO'Z SCRIBBEL YR writeFile AN YR output MKAY    BTW Write to the file
+	I IZ STDIO'Z SCRIBBEL YR writeFile AN YR "More text on same line" MKAY
+	I IZ STDIO'Z SCRIBBEL YR writeFile AN YR ":)Write on a new line" MKAY
+	I IZ STDIO'Z CLOSE YR writeFile MKAY                    BTW Close the file
 
     OBTW
     STDIO has the following functions:
@@ -146,13 +165,20 @@ CAN HAS STRING?
     The BLOW function generates the next pseudo-random number in a sequence.
     The MIX function sets a seed to change the starting point of the sequence. 
     TLDR
-    VISIBLE STDLIB'Z I IZ BLOW YR 12 MKAY   BTW Gives a random number up to 12
-    VISIBLE STDLIB'Z I IZ MIX YR 12 MKAY    BTW Sets a seed for the random number
+    I IZ STDLIB'Z MIX YR 12 MKAY            BTW Sets a seed for the pseudorandom number (chooses the starting point in the sequence)
+    VISIBLE I IZ STDLIB'Z BLOW YR 12 MKAY   BTW Gives a pseudorandom number up to 12 using the new seed
 
 OBTW
-Open problems
 
-How on earth do you square-root... Power series maybe??!?
+Things that are just entirely missing from this implementation of LOLCODE
+ - System time (without which you can't do a timer, or pseudorandomly seeded pseudorandom numbers)
+ - Reflection on primitives (e.g. name of var, type of var, etc)
+
+Things that are missing but could just about be coded in
+ - Square root operator
+ - Numbered arrays, basic get/set methods, sorting
+ - Reflection on BUKKITz
+
 TLDR
 
 KTHXBYE
