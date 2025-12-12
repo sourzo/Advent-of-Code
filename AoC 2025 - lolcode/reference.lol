@@ -1,5 +1,15 @@
 HAI 1.3
-    CAN HAS STDIO? BTW Loads the module. Except I'm not sure it does?
+    OBTW
+        There's a decent cheatsheet on the website learnxinyminutes.com/lolcode
+        Since I'm using the lci interpreter, on the future branch, the best place for information
+        is the lolcode spec v1.3 which you can find in the lci repo.
+
+        At present I don't really want to rewrite everything that's in the above references,
+        so this file focuses primarily on details that I don't think are clearly explained elsewhere.
+        Although I am throwing a few basics in here as well, for my own reference.
+    TLDR
+
+    CAN HAS STDIO? BTW Loads the module. There's only 3 modules.
     CAN HAS STRING?
     CAN HAS STDLIB?
     BTW This is a single-line comment
@@ -12,7 +22,7 @@ HAI 1.3
 
     BTW declare a variable
     I HAS A var ITZ A YARN
-    BTW assign a value
+    BTW assign a value to an already-existing variable
     var R "2"
     BTW declare and assign
     I HAS A nother_var ITZ "Kitty"
@@ -27,10 +37,25 @@ HAI 1.3
     BTW VISIBLE doesn't need the SMOOSH
     VISIBLE "The sum of 2 and 8 is " AN 10
 
-    BTW Whitespace does not matter but it's polite to indent
-    BTW Escape character is colon
-    BTW Generally statements go on one line, but you can use a comma to put more than one statement on a line:
-    BTW (Each VISIBLE command prints on a new line)
+    OBTW General syntax notes
+    - Whitespace does not matter but it's polite to indent
+    - Escape character is colon
+    - "IT" is whatever value was last produced but not assigned to anything, e.g.
+        SUM OF 5 AN 5
+        VISIBLE IT          BTW prints 10
+    - "I" refers to the local scope (in the file, inside a function, inside a BUKKIT declaration, inside a loop)
+    - "ME" refers to the object calling the function. 
+        So a function declaration is
+            HOW IZ <obj> <functionName> YR <arg1> etc
+        And a function call is
+            <obj> IZ <functionName> YR <arg1> etc
+        And inside the function, if a BUKKIT called the function, you can say stuff like
+            ME'Z name R "sourzo"        BTW to reassign a value
+            ME HAS A age ITZ 256        BTW to declare & assign a property
+            ME IZ addin YR 12 AN YR 42  BTW to call a function defined for the BUKKIT
+    - Generally statements go on one line, but you can use a comma to put more than one statement on a line:
+    (Each VISIBLE command prints on a new line)
+    TLDR
     VISIBLE "Look here's something:: ", I HAS A x ITZ 23, VISIBLE x
 
     BTW class definition
@@ -54,7 +79,7 @@ HAI 1.3
     Confusingly (I think so anyway), you don't use MKAY after operators
     TLDR
 
-    BTW use a function from a package or class
+    BTW use a function from a module or BUKKIT
     BTW The new line character is a smiley :) as shown in lots of print statements below
     VISIBLE ":)Calling the LEN function from the STRING module..."
     VISIBLE I IZ STRING'Z LEN YR nother_var MKAY
@@ -124,10 +149,15 @@ HAI 1.3
     TLDR
 
     VISIBLE ":)Bukkits! How do they work?"
-    I HAS A book ITZ A BUKKIT
-    book HAS A pageCount ITZ 300
-    book HAS A bookmark ITZ 144
-    book HAS A title ITZ "Famous Cats of History"
+    I HAS A book1 ITZ A BUKKIT
+    book1 HAS A pageCount ITZ 300        BTW Remember this is declaration & assignment
+    book1 HAS A bookmark ITZ 144         BTW you can only declare a variable that doesn't exist
+    book1 HAS A title ITZ "Famous Cats of History"
+    
+    BTW access an attribute of a BUKKIT
+    VISIBLE book1'Z title
+    BTW reassign a value
+    book1'Z title R "Famous Domestic Cats of History"
 
     O HAI IM book2
         I HAS A pageCount ITZ 9999
@@ -135,7 +165,20 @@ HAI 1.3
         I HAS A title ITZ "Famous Cats of History vol 2"
     KTHX
 
-    VISIBLE book'Z title
+    BTW you can also define functions in BUKKITz.
+    BTW note that "I" in "HOW IZ I" can be substituted for a specific BUKKIT
+    HOW IZ book2 TURN_PAGE
+        BTW Increases the value for bookmark by 1
+        I HAS A page_amount ITZ 1                               BTW "I" here is the local scope
+        ME'Z bookmark R SUM OF ME'Z bookmark AN page_amount     BTW 'ME' refers to the calling BUKKIT (book2 in this case)
+    IF U SAY SO
+
+    VISIBLE "book2's bookmark:: " book2'Z bookmark
+    book2 IZ TURN_PAGE MKAY
+    VISIBLE "book2's bookmark:: " book2'Z bookmark
+    OBTW use 'book2' instead of 'I' because the function is defined on book2, 
+    not the local scope (which in this instance is the whole .lol file)
+    TLDR
 
     OBTW
         Most importantly, you can treat it like an array by creating a variable for each index
@@ -150,13 +193,59 @@ HAI 1.3
         BTW which in this example all just have the value "blahblahblah"
     IM OUTTA YR arrayLoop
 
-    VISIBLE squareNumbersArray'Z SRS 4
+    VISIBLE "Element 4:: " AN squareNumbersArray'Z SRS 4
+
+
+    OBTW Inheritance
+        You can inherit from BUKKITZ, but (at least for me) it works a bit weirdly.
+        Suppose you have the following:
+    TLDR
+        I HAS A b1 ITZ A BUKKIT
+        b1 HAS A greeting ITZ "hello"
+        I HAS A b2 ITZ LIEK A b1
+
+        BTW Now b2 sort-of inherits the property 'greeting', except not really.
+        BTW To access the property, you have to use 'Z notation:
+        VISIBLE ":)b1's greeting is:: " AN b1'Z greeting
+        VISIBLE "b2's greeting is:: " AN b2'Z greeting
+        OBTW except... b2 doesn't actually have this property.
+        Since that property doesn't exist on b2, and b2 inherits from b1, the interpreter
+        looks to b1 to find the property and returns the value for b1'Z greeting. When
+        you change the value for either BUKKIT, it changes for both BUKKITz. Like so:
+        TLDR
+        b2'Z greeting R "goodbye"
+        VISIBLE ":)b1's greeting is now:: " AN b1'Z greeting
+        VISIBLE "b2's greeting is now:: " AN b2'Z greeting
+
+        b1'Z greeting R "no wait I forgot my keys"
+        VISIBLE ":)b1's greeting is now:: " AN b1'Z greeting
+        VISIBLE "b2's greeting is now:: " AN b2'Z greeting
+
+        BTW If you uncomment the following line, you'll see that you can't re-declare a variable as you get an error:
+        BTW b1 HAS A greeting ITZ "bonjour"
+
+        BTW However the following line does work, and assigns a separate value for b2:
+        b2 HAS A greeting ITZ "au revoir"
+        VISIBLE ":)b1's greeting is now:: " AN b1'Z greeting
+        VISIBLE "b2's greeting is now:: " AN b2'Z greeting
+
+        BTW and now if you change either one, it only affects the one you changed:
+        b2'Z greeting R "auf wiedersehen"
+        VISIBLE ":)b1's greeting is now:: " AN b1'Z greeting
+        VISIBLE "b2's greeting is now:: " AN b2'Z greeting
+
+        b1'Z greeting R "guten tag"
+        VISIBLE ":)b1's greeting is now:: " AN b1'Z greeting
+        VISIBLE "b2's greeting is now:: " AN b2'Z greeting
+
+
+    OBTW 
+    The STRING package only has 2 functions: LEN and AT
+    TLDR
 
     VISIBLE ":)The STRING package"
-    BTW The STRING package only has 2 functions:
-    BTW Length
-    VISIBLE "Length: " AN I IZ STRING'Z LEN YR "PsPsPs" MKAY
-    BTW Index from 0
+    VISIBLE "Length: " AN I IZ STRING'Z LEN YR "Whiskas" MKAY
+    BTW indexing from zero.
     VISIBLE "Character 1: " AN I IZ STRING'Z AT YR "Whiskas" AN YR 1 MKAY
 
     OBTW 
@@ -170,9 +259,10 @@ HAI 1.3
 
 OBTW
 
-Things that are just entirely missing from this implementation of LOLCODE
+Things that are missing from this implementation of LOLCODE
  - System time (without which you can't do a timer, or pseudorandomly seeded pseudorandom numbers)
  - Reflection on primitives (e.g. name of var, type of var, etc)
+ - Error handling. Try/catch would be nice. Exceptions too.
 
 Things that are missing but could just about be coded in
  - Square root operator
