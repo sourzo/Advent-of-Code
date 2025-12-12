@@ -1,0 +1,12 @@
+HOW IZ I printArrayofPrimitives YR bukkit
+	IM IN YR printLoop UPPIN YR idx TIL BOTH SAEM idx AN bukkit'Z LEN
+		VISIBLE idx AN ":: " AN bukkit'Z SRS idx
+	IM OUTTA YR printLoop
+IF U SAY SO
+
+HOW IZ I printArrayofBukkitz YR bukkit
+	IM IN YR printLoop UPPIN YR idx TIL BOTH SAEM idx AN bukkit'Z LEN
+		VISIBLE idx 
+		VISIBLE I IZ printArrayofPrimitives YR bukkit'Z SRS idx MKAY
+	IM OUTTA YR printLoop
+IF U SAY SO
