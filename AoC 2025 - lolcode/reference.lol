@@ -261,8 +261,10 @@ OBTW
 
 Things that are missing from this implementation of LOLCODE
  - System time (without which you can't do a timer, or pseudorandomly seeded pseudorandom numbers)
- - Reflection on primitives (e.g. name of var, type of var, etc)
+ - Reflection on primitives (e.g. name of var, type of var, check if something is null, etc) 
  - Error handling. Try/catch would be nice. Exceptions too.
+ - Stack trace
+
 
 Things that are missing but could just about be coded in
  - Square root operator
