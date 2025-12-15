@@ -12,8 +12,8 @@ TLDR
 
 BTW Setup ----------------------------------------------------------------
 I HAS A inputName ITZ "NOMNOMZ/8"
-I HAS A calculateDistanceLookup ITZ FAIL    BTW Switch between calculating or reading cached values
-I HAS A sortDistanceLookup ITZ FAIL 		BTW Switch between sorting or reading cached values
+I HAS A calculateDistanceLookup ITZ WIN    BTW Switch between calculating or reading cached values
+I HAS A sortDistanceLookup ITZ WIN 		BTW Switch between sorting or reading cached values
 
 I HAS A target ITZ A NUMBR
 I HAS A FILENAME ITZ A YARN
@@ -129,9 +129,7 @@ HOW IZ I READIN_CSV YR yarn
 	FOUND YR csvOutput
 IF U SAY SO
 
-
 VISIBLE "Parsing input..."
-I HAS A KOORDINATEZ ITZ I IZ READIN_CSV YR contents MKAY
 OBTW
 	So KOORDINATEZ is structured as follows:
 	It is a integer-indexed dictionary, so the keys are 0...n 
@@ -145,6 +143,11 @@ OBTW
 		coords0'Z 2 = z
 
 TLDR
+I HAS A KOORDINATEZ ITZ I IZ READIN_CSV YR contents MKAY
+
+BTW Add things for circuits
+KOORDINATEZ HAS A CIRCUIT_MAX ITZ 0
+
 VISIBLE "... finished parsing."
 
 BTW Calculating the distance between each pair of junction boxes - this takes several hours ---------------------------------------------------------------------
@@ -153,81 +156,37 @@ VISIBLE "Computing..."
 HOW IZ I MEASURIN YR coordinates1 AN YR coordinates2
 	BTW Produces a distance between two sets of coordinates (which are BUKKITs).
 	BTW I am *not* writing a function to square-root but x^2+y^2+z^2 will do the job.
-	I HAS A x_dist ITZ DIFF OF coordinates1'Z SRS 0 AN coordinates2'Z SRS 0
-	I HAS A y_dist ITZ DIFF OF coordinates1'Z SRS 1 AN coordinates2'Z SRS 1
-	I HAS A z_dist ITZ DIFF OF coordinates1'Z SRS 2 AN coordinates2'Z SRS 2
+	I HAS A koords1 ITZ KOORDINATEZ'Z SRS coordinates1
+	I HAS A koords2 ITZ KOORDINATEZ'Z SRS coordinates2
+	I HAS A x_dist ITZ DIFF OF koords1'Z SRS 0 AN koords2'Z SRS 0
+	I HAS A y_dist ITZ DIFF OF koords1'Z SRS 1 AN koords2'Z SRS 1
+	I HAS A z_dist ITZ DIFF OF koords1'Z SRS 2 AN koords2'Z SRS 2
 	I HAS A x_dist_squared ITZ PRODUKT OF x_dist AN x_dist
 	I HAS A y_dist_squared ITZ PRODUKT OF y_dist AN y_dist
 	I HAS A z_dist_squared ITZ PRODUKT OF z_dist AN z_dist
 	FOUND YR SUM OF SUM OF x_dist_squared AN y_dist_squared AN z_dist_squared
 IF U SAY SO
 
-HOW IZ I WRITIN YR coordinates
-	BTW Turns the coordinates (back) into a YARN for indexing
-	I HAS A yarn ITZ SMOOSH coordinates'Z SRS 0 AN "," AN coordinates'Z SRS 1 AN "," AN coordinates'Z SRS 2 MKAY
-	FOUND YR yarn
-IF U SAY SO
-
-O HAI IM CIRCUITZ
-	I HAS A SIZE ITZ KOORDINATEZ'Z LEN
-	I HAS A MAX ITZ 0
-	I HAS A INDEX ITZ A BUKKIT
-KTHX
-
-BTW Populate a lookup of circuits, where the KEY is the coordinates-as-string, and the VALUE is the circuit (currently zero)
+BTW Add circuit as a value to KOORDINATEZ
 IM IN YR circuitzLoop UPPIN YR idx TIL BOTH SAEM idx AN KOORDINATEZ'Z LEN
-	I HAS A yarn ITZ I IZ WRITIN YR KOORDINATEZ'Z SRS idx MKAY
-	CIRCUITZ HAS A SRS yarn ITZ 0
-	CIRCUITZ'Z INDEX HAS A SRS idx ITZ yarn
+	I HAS A koords ITZ KOORDINATEZ'Z SRS idx
+	koords HAS A circuit ITZ 0
 IM OUTTA YR circuitzLoop
 
 O HAI IM distanceLookup
 	I HAS A SIZE ITZ 0
 	OBTW 
 	Elements will look sort of like this:
-	idx: (coords1, coords2, distance)
+	idx: (coords1_idx, coords2_idx, distance)
 	TLDR
-
-
-	HOW IZ I INDEXIN YR coordinates1 AN YR coordinates2
-		BTW Returns the index of the two sets of coordinates from the lookup
-		IM IN YR loop UPPIN YR idx TIL BOTH SAEM idx AN SIZE
-			I HAS A ntuple ITZ ME'Z SRS idx
-			BOTH SAEM ntuple'Z coords1 AN coordinates1, O RLY?
-				YA RLY
-					BOTH SAEM ntuple'Z coords2 AN coordinates2, O RLY?
-						YA RLY, FOUND YR idx
-					OIC
-			OIC
-		IM OUTTA YR loop
-		BTW if failed, try the coordinates the other way round
-		IM IN YR loop UPPIN YR idx TIL BOTH SAEM idx AN SIZE
-			I HAS A ntuple ITZ ME'Z SRS idx
-			BOTH SAEM ntuple'Z coords2 AN coordinates1, O RLY?
-				YA RLY
-					BOTH SAEM ntuple'Z coords1 AN coordinates2, O RLY?
-						YA RLY, FOUND YR idx
-					OIC
-			OIC
-		IM OUTTA YR loop
-		VISIBLE "O NOEZ, MAI LOOKUP IZ INKOMPLEET"
-	IF U SAY SO
-
-	HOW IZ I MEASURIN YR coordinates1 AN YR coordinates2
-		BTW Returns the distance between the two sets of coordinates from the lookup
-		I HAS A idx ITZ I IZ INDEXIN YR coordinates1 AN YR coordinates2 MKAY
-		I HAS A NTUPLE ITZ ME'Z SRS idx
-		FOUND YR NTUPLE'Z distance
-	IF U SAY SO
 
 	HOW IZ I KOMBININ YR circuit1 AN YR circuit2
 		BTW Every box which is in circuit1 will be assigned to circuit2
-		I HAS A lookup ITZ CIRCUITZ'Z INDEX
-		IM IN YR circuitLoop UPPIN YR idx TIL BOTH SAEM idx AN CIRCUITZ'Z SIZE
-			I HAS A key ITZ lookup'Z SRS idx
-			BOTH SAEM CIRCUITZ'Z SRS key AN circuit1, O RLY?
+		IM IN YR circuitLoop UPPIN YR idx TIL BOTH SAEM idx AN KOORDINATEZ'Z SIZE
+			I HAS A coords ITZ KOORDINATEZ'Z SRS idx
+			BOTH SAEM coords'Z circuit AN circuit1, O RLY?
 				YA RLY
-					CIRCUITZ'Z SRS key R circuit2
+					coords'Z circuit R circuit2
 			OIC
 		IM OUTTA YR circuitLoop
 	IF U SAY SO
@@ -235,29 +194,28 @@ O HAI IM distanceLookup
 	HOW IZ I KONNECTIN YR idx
 		BTW "connects" two junction boxes 
 		I HAS A NTUPLE ITZ ME'Z SRS idx
+		
+		I HAS A COORDS1 ITZ NTUPLE'Z coords1			BTW index of coordinates
+		I HAS A koords1 ITZ KOORDINATEZ'Z SRS COORDS1   BTW bukkit containing (x,y,z) as (0,1,2) and circuit
+		I HAS A COORDS1_CIRCUIT ITZ koords1'Z circuit	BTW circuit
 
-		I HAS A COORDS1 ITZ NTUPLE'Z coords1
-		I HAS A COORDS1_YARN ITZ I IZ WRITIN YR COORDS1 MKAY
-		I HAS A COORDS1_CIRCUIT ITZ CIRCUITZ'Z SRS COORDS1_YARN
-
-		I HAS A COORDS2 ITZ NTUPLE'Z coords2
-		I HAS A COORDS2_YARN ITZ I IZ WRITIN YR COORDS2 MKAY
-		I HAS A COORDS2_CIRCUIT ITZ CIRCUITZ'Z SRS COORDS2_YARN
-
+		I HAS A COORDS2 ITZ NTUPLE'Z coords2			BTW index of coordinates
+		I HAS A koords2 ITZ KOORDINATEZ'Z SRS COORDS2   BTW bukkit containing (x,y,z) as (0,1,2) and circuit
+		I HAS A COORDS2_CIRCUIT ITZ koords2'Z circuit	BTW circuit
 		BOTH OF BOTH SAEM 0 AN COORDS1_CIRCUIT AN BOTH SAEM 0 AN COORDS2_CIRCUIT, O RLY?
 			YA RLY
 				BTW Case 1: Both in no circuits (ID=0). Create a new circuit and add them.
-				CIRCUITZ'Z MAX R SUM OF CIRCUITZ'Z MAX AN 1
-				CIRCUITZ'Z SRS COORDS1_YARN R CIRCUITZ'Z MAX
-				CIRCUITZ'Z SRS COORDS2_YARN R CIRCUITZ'Z MAX
+				KOORDINATEZ'Z CIRCUIT_MAX R SUM OF KOORDINATEZ'Z CIRCUIT_MAX AN 1
+				koords1'Z circuit R KOORDINATEZ'Z CIRCUIT_MAX
+				koords2'Z circuit R KOORDINATEZ'Z CIRCUIT_MAX
 				FOUND YR WIN
 			MEBBE BOTH SAEM 0 AN COORDS1_CIRCUIT
 				BTW Case 2a: One is in a circuit and the other isn't. Add the other to the circuit.
-				CIRCUITZ'Z SRS COORDS1_YARN R COORDS2_CIRCUIT
+				koords1'Z circuit R COORDS2_CIRCUIT
 				FOUND YR WIN
 			MEBBE BOTH SAEM 0 AN COORDS2_CIRCUIT
 				BTW Case 2b: One is in a circuit and the other isn't. Add the other to the circuit.
-				CIRCUITZ'Z SRS COORDS2_YARN R COORDS1_CIRCUIT
+				koords2'Z circuit R COORDS1_CIRCUIT
 				FOUND YR WIN
 			NO WAI
 				BTW Case 3: Both in different circuits. Combine the two circuits.
@@ -271,17 +229,14 @@ O HAI IM distanceLookup
 	BTW Returns a tuple of the circuits that the two junction boxes are connected to
 		I HAS A NTUPLE ITZ ME'Z SRS idx
 
-		I HAS A COORDS1 ITZ NTUPLE'Z coords1
-		I HAS A COORDS1_YARN ITZ I IZ WRITIN YR COORDS1 MKAY
-		I HAS A COORDS1_CIRCUIT ITZ CIRCUITZ'Z SRS COORDS1_YARN
-
-		I HAS A COORDS2 ITZ NTUPLE'Z coords2
-		I HAS A COORDS2_YARN ITZ I IZ WRITIN YR COORDS2 MKAY
-		I HAS A COORDS2_CIRCUIT ITZ CIRCUITZ'Z SRS COORDS2_YARN
+		I HAS A koords1_idx ITZ NTUPLE'Z coords1
+		I HAS A koords1 ITZ KOORDINATEZ'Z SRS koords1_idx
+		I HAS A koords2_idx ITZ NTUPLE'Z coords2
+		I HAS A koords2 ITZ KOORDINATEZ'Z SRS koords2_idx
 
 		I HAS A TWOPLE ITZ A BUKKIT
-		TWOPLE HAS A SRS 0 ITZ COORDS1_CIRCUIT
-		TWOPLE HAS A SRS 1 ITZ COORDS2_CIRCUIT
+		TWOPLE HAS A SRS 0 ITZ koords1'Z circuit
+		TWOPLE HAS A SRS 1 ITZ koords2'Z circuit
 
 		FOUND YR TWOPLE
 	IF U SAY SO
@@ -296,31 +251,13 @@ O HAI IM distanceLookup
 		FOUND YR BOTH SAEM TUPLE'Z SRS 0 AN TUPLE'Z SRS 1
 	IF U SAY SO
 
-	HOW IZ I GETTIN_CLOSEST
-		BTW Returns index of coordinates which are the shortest distance and aren't already connected
-		I HAS A lastIdx ITZ DIFF OF ME'Z SIZE AN 1
-		I HAS A minDistIdx ITZ lastIdx
-		IM IN YR searchLoop UPPIN YR pairIdx TIL BOTH SAEM pairIdx AN lastIdx
-			BTW If already in same circuit, disregard
-			ME IZ SAEM_CIRCUITZ YR pairIdx MKAY, O RLY?
-				YA RLY
-				NO WAI
-					I HAS A currentWinningNTuple ITZ ME'Z SRS minDistIdx
-					I HAS A currentSmallestDistance ITZ currentWinningNTuple'Z distance
-					I HAS A thisNTuple ITZ ME'Z SRS pairIdx
-					I HAS A thisDistance ITZ thisNTuple'Z distance
-					BOTH SAEM thisDistance AN SMALLR OF thisDistance AN currentSmallestDistance, O RLY?
-						YA RLY, minDistIdx R pairIdx
-					OIC
-			OIC
-		IM OUTTA YR searchLoop
-		FOUND YR minDistIdx
-	IF U SAY SO
-
 KTHX
 
 HOW IZ I READ_DISTANCE_CSV YR filename
-	BTW Read cached values instead
+	OBTW 
+	Reads cached values for distanceLookup from the csv file. Populates distanceLookup with these values.
+	TLDR
+
 	BTW Open file
 	VISIBLE "Attempting to read file..."
 	I HAS A newReadFile ITZ I IZ STDIO'Z OPEN YR filename AN YR "r" MKAY
@@ -342,19 +279,13 @@ HOW IZ I READ_DISTANCE_CSV YR filename
 	I HAS A table ITZ I IZ READIN_CSV YR lookupCsvYarn MKAY
 	IM IN YR itemLoop UPPIN YR itemIdx TIL BOTH SAEM itemIdx AN table'Z SIZE
 		BOTH SAEM 0 AN MOD OF itemIdx AN 1, O RLY?
-			YA RLY, VISIBLE itemIdx
+			YA RLY, VISIBLE "populating distance lookup - " itemIdx
 		OIC
 		I HAS A item ITZ table'Z SRS itemIdx
 		I HAS A distanceNTuple ITZ A BUKKIT
-		distanceNTuple HAS A coords1 ITZ A BUKKIT
-		distanceNTuple'Z coords1 HAS A SRS 0 ITZ item'Z SRS 0
-		distanceNTuple'Z coords1 HAS A SRS 1 ITZ item'Z SRS 1
-		distanceNTuple'Z coords1 HAS A SRS 2 ITZ item'Z SRS 2
-		distanceNTuple HAS A coords2 ITZ A BUKKIT
-		distanceNTuple'Z coords2 HAS A SRS 0 ITZ item'Z SRS 3
-		distanceNTuple'Z coords2 HAS A SRS 1 ITZ item'Z SRS 4
-		distanceNTuple'Z coords2 HAS A SRS 2 ITZ item'Z SRS 5
-		distanceNTuple HAS A distance ITZ item'Z SRS 6
+		distanceNTuple HAS A coords1 ITZ item'Z SRS 0
+		distanceNTuple HAS A coords2 ITZ item'Z SRS 1
+		distanceNTuple HAS A distance ITZ item'Z SRS 2
 		BTW Add to DistanceLookup
 		distanceLookup HAS A SRS distanceLookup'Z SIZE ITZ distanceNTuple
 		distanceLookup'Z SIZE R SUM OF distanceLookup'Z SIZE AN 1
@@ -380,28 +311,39 @@ BOTH OF calculateDistanceLookup AN sortDistanceLookup, O RLY?
 			NO WAI, VISIBLE "Successfully opened " AN FILENAME AN " for writing"
 		OIC
 
+		BTW Now do half a million distance calculations
 		IM IN YR coordsLoop1 UPPIN YR idx1 TIL BOTH SAEM idx1 AN KOORDINATEZ'Z LEN
-			VISIBLE "idx1:: " AN idx1
+			BOTH SAEM 100 AN BIGGR OF 100 AN idx1, O RLY?
+				YA RLY, VISIBLE "distLookup:: " AN idx1
+				MEBBE BOTH SAEM 0 AN MOD OF idx1 AN 10
+					VISIBLE "distLookup:: " AN idx1
+			OIC
+
 			IM IN YR coordsLoop2 UPPIN YR idx2 TIL BOTH SAEM idx2 AN BIGGR OF idx1 AN idx2
-				BTW create a ntuple of first coordinates, second coordinates, and distance between them
+
+				BTW create a 3tuple of indices for the two sets of coordinates, and the distance between them
 				I HAS A distanceNTuple ITZ A BUKKIT
-				distanceNTuple HAS A coords1 ITZ KOORDINATEZ'Z SRS idx1
-				I IZ STDIO'Z SCRIBBEL YR writeFile AN YR I IZ WRITIN YR distanceNTuple'Z coords1 MKAY MKAY
+
+				distanceNTuple HAS A coords1 ITZ idx1
+				I IZ STDIO'Z SCRIBBEL YR writeFile AN YR distanceNTuple'Z coords1 MKAY
 				I IZ STDIO'Z SCRIBBEL YR writeFile AN YR "," MKAY
-				distanceNTuple HAS A coords2 ITZ KOORDINATEZ'Z SRS idx2
-				I IZ STDIO'Z SCRIBBEL YR writeFile AN YR I IZ WRITIN YR distanceNTuple'Z coords2 MKAY MKAY
+
+				distanceNTuple HAS A coords2 ITZ idx2
+				I IZ STDIO'Z SCRIBBEL YR writeFile AN YR distanceNTuple'Z coords2 MKAY
 				I IZ STDIO'Z SCRIBBEL YR writeFile AN YR "," MKAY
-				distanceNTuple HAS A distance ITZ I IZ MEASURIN YR distanceNTuple'Z coords1 AN YR distanceNTuple'Z coords2 MKAY
+
+				BTW calculate distance between coordinates and record the result
+				distanceNTuple HAS A distance ITZ I IZ MEASURIN YR idx1 AN YR idx2 MKAY
 				I IZ STDIO'Z SCRIBBEL YR writeFile AN YR distanceNTuple'Z distance MKAY
 				I IZ STDIO'Z SCRIBBEL YR writeFile AN YR ":)" MKAY
-				BTW Add the ntuple to the lookup
+
+				BTW Add the 3tuple to the lookup
 				distanceLookup HAS A SRS distanceLookup'Z SIZE ITZ distanceNTuple
 				distanceLookup'Z SIZE R SUM OF distanceLookup'Z SIZE AN 1
 				BTW Write out
 			IM OUTTA YR coordsLoop2
 		IM OUTTA YR coordsLoop1
 
-		BTW Write out to a file because this took bloody ages to compute
 		I IZ STDIO'Z CLOSE YR writeFile MKAY
 	MEBBE sortDistanceLookup
 		BTW Read cached values instead
@@ -444,6 +386,7 @@ HOW IZ I REMOVIN YR b AN YR idx
 IF U SAY SO
 
 HOW IZ I ALL_SAEM YR b
+	BTW For a BUKKIT Of NUMBRz (or YARNZ, I suppose) returns WIN if all values are the same
 	I HAS A item_0 ITZ b'Z SRS 0
 	IM IN YR elementLoop UPPIN YR idx TIL BOTH SAEM idx AN b'Z SIZE
 		I HAS A item ITZ b'Z SRS idx
@@ -581,9 +524,9 @@ sortDistanceLookup, O RLY?
 		OIC
 		IM IN YR elementLoop UPPIN YR idx TIL BOTH SAEM idx AN distanceLookup'Z SIZE
 			I HAS A distanceNTuple ITZ distanceLookup'Z SRS idx
-			I IZ STDIO'Z SCRIBBEL YR writeFile AN YR I IZ WRITIN YR distanceNTuple'Z coords1 MKAY MKAY
+			I IZ STDIO'Z SCRIBBEL YR writeFile AN YR distanceNTuple'Z coords1  MKAY
 			I IZ STDIO'Z SCRIBBEL YR writeFile AN YR "," MKAY
-			I IZ STDIO'Z SCRIBBEL YR writeFile AN YR I IZ WRITIN YR distanceNTuple'Z coords2 MKAY MKAY
+			I IZ STDIO'Z SCRIBBEL YR writeFile AN YR distanceNTuple'Z coords2  MKAY
 			I IZ STDIO'Z SCRIBBEL YR writeFile AN YR "," MKAY
 			I IZ STDIO'Z SCRIBBEL YR writeFile AN YR distanceNTuple'Z distance MKAY
 			I IZ STDIO'Z SCRIBBEL YR writeFile AN YR ":)" MKAY
@@ -607,16 +550,18 @@ VISIBLE "Pairing up the junction boxes..."
 IM IN YR distanceLookupLoop UPPIN YR idx TIL BOTH SAEM connectionCount AN DIFF OF target AN 1
 	BTW Print progress to console
 	BOTH SAEM 100 AN BIGGR OF 100 AN connectionCount, O RLY?
-		YA RLY, VISIBLE connectionCount
-		MEBBE BOTH SAEM 0 AN MOD OF connectionCount AN 100
-			VISIBLE connectionCount
+		YA RLY, VISIBLE "connections:: " AN connectionCount
+		MEBBE BOTH SAEM 0 AN MOD OF connectionCount AN 10
+			VISIBLE "connections:: " AN connectionCount
 	OIC
 	distanceLookup IZ SAEM_CIRCUITZ YR idx MKAY, O RLY?
 		YA RLY BTW In same circuit - don't connect
 		NO WAI
-			I HAS A tuple ITZ distanceLookup'Z SRS idx
 			BTW Not in same circuit - connect
 			distanceLookup IZ KONNECTIN YR idx MKAY
+			I HAS A lookup_item ITZ distanceLookup'Z SRS idx
+			I HAS A coords1 ITZ KOORDINATEZ'Z SRS lookup_item'Z coords1
+			I HAS A coords2 ITZ KOORDINATEZ'Z SRS lookup_item'Z coords2
 			BTW Check for success, and increase connectionCount
 			O RLY?
 				YA RLY, connectionCount R SUM OF connectionCount AN 1
@@ -629,23 +574,29 @@ IM OUTTA YR distanceLookupLoop
 
 VISIBLE "... we're out of fairy lights!"
 
+OBTW
+Count the number of junction boxes in each circuit
+i.e. the number of times each 'circuit' value appears in KOORDINATEZ
+TLDR
 
 I HAS A count ITZ A BUKKIT
-IM IN YR countLoop UPPIN YR idx TIL BOTH SAEM idx AN SUM OF CIRCUITZ'Z MAX AN 1
+IM IN YR countLoop UPPIN YR idx TIL BOTH SAEM idx AN SUM OF KOORDINATEZ'Z CIRCUIT_MAX AN 1
 	count HAS A SRS idx ITZ 0
 IM OUTTA YR countLoop
 
-I HAS A lookup ITZ CIRCUITZ'Z INDEX
-IM IN YR circuitLoop UPPIN YR idx TIL BOTH SAEM idx AN CIRCUITZ'Z SIZE
-	I HAS A key ITZ lookup'Z SRS idx
-	count'Z SRS CIRCUITZ'Z SRS key R SUM OF count'Z SRS CIRCUITZ'Z SRS key AN 1
-IM OUTTA YR circuitLoop
+I HAS A lookup ITZ KOORDINATEZ
+IM IN YR coordsLoop UPPIN YR idx TIL BOTH SAEM idx AN KOORDINATEZ'Z SIZE
+	BTW Find out which circuit the KOORDINATEZ item is in, and increase that count by 1
+	I HAS A item ITZ KOORDINATEZ'Z SRS idx
+	I HAS A circuit_id ITZ item'Z circuit
+	count'Z SRS circuit_id R SUM OF count'Z SRS circuit_id AN 1
+IM OUTTA YR coordsLoop
 
 I HAS A largestCircuitSize ITZ 0
 I HAS A secondLargestCircuitSize ITZ 0
 I HAS A thirdLargestCircuitSize ITZ 0
 
-IM IN YR countLoop UPPIN YR idx TIL BOTH SAEM idx AN SUM OF CIRCUITZ'Z MAX AN 1
+IM IN YR countLoop UPPIN YR idx TIL BOTH SAEM idx AN SUM OF KOORDINATEZ'Z CIRCUIT_MAX AN 1
 DIFFRINT idx AN 0, O RLY?
 	YA RLY, DIFFRINT count'Z SRS idx AN 0, O RLY?
 		YA RLY
