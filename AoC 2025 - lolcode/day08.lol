@@ -12,8 +12,8 @@ TLDR
 
 BTW Setup ----------------------------------------------------------------
 I HAS A inputName ITZ "NOMNOMZ/8"
-I HAS A calculateDistanceLookup ITZ WIN    BTW Switch between calculating or reading cached values
-I HAS A sortDistanceLookup ITZ WIN 		BTW Switch between sorting or reading cached values
+I HAS A calculateDistanceLookup ITZ FAIL    BTW Switch between calculating or reading cached values
+I HAS A sortDistanceLookup ITZ FAIL 		BTW Switch between sorting or reading cached values
 
 I HAS A target ITZ A NUMBR
 I HAS A FILENAME ITZ A YARN
@@ -36,8 +36,10 @@ inputName, WTF?
 		VISIBLE "U HAZ RONG FILE, SILLY"
 OIC
 VISIBLE target
+I HAS A sortedFilename ITZ SMOOSH FILENAME AN "_sorted" MKAY
 
 BTW Open file ------------------------------------------------------------
+BTW Need this for the KOORDINATEZ object as well as populating the distanceLookup
 VISIBLE "Attempting to read file..."
 I HAS A readFile ITZ I IZ STDIO'Z OPEN YR inputName AN YR "r" MKAY
 I IZ STDIO'Z DIAF YR readFile MKAY
@@ -72,6 +74,7 @@ HOW IZ I charIsNumeric YR char
 IF U SAY SO
 
 HOW IZ I isNumbr YR yarn
+
 	BTW Checks if a YARN can be cast into a NUMBR
 	IM IN YR yarnLoop UPPIN YR yarnIdx TIL BOTH SAEM yarnIdx AN I IZ STRING'Z LEN YR yarn MKAY
 		I HAS A char ITZ I IZ STRING'Z AT YR yarn AN YR yarnIdx MKAY
@@ -126,50 +129,22 @@ HOW IZ I READIN_CSV YR yarn
 	FOUND YR csvOutput
 IF U SAY SO
 
-HOW IZ I READ_DISTANCE_CSV YR filename
-	BTW Read cached values instead
-	BTW Open file
-	VISIBLE "Attempting to read file..."
-	I HAS A newReadFile ITZ I IZ STDIO'Z OPEN YR filename AN YR "r" MKAY
-	I IZ STDIO'Z DIAF YR newReadFile MKAY
-	O RLY?
-		YA RLY, VISIBLE "Failed to open file for reading"
-		NO WAI, VISIBLE "Successfully opened the file for reading"
-	OIC
-
-	BTW Assign the whole contents of the file to a YARN
-	I HAS A lookupCsvYarn ITZ I IZ STDIO'Z LUK YR newReadFile AN YR 99999999999 MKAY
-	I IZ STDIO'Z CLOSE YR newReadFile MKAY
-
-	BTW Get the number of chars in the file for later parsing
-	I HAS A endLoop ITZ I IZ STRING'Z LEN YR lookupCsvYarn MKAY 
-	VISIBLE "File size (chars):: " AN endLoop
-
-	BTW Turn back into a distanceLookup
-	I HAS A table ITZ I IZ READIN_CSV YR lookupCsvYarn MKAY
-	IM IN YR itemLoop UPPIN YR itemIdx TIL BOTH SAEM itemIdx AN table'Z SIZE
-	BOTH SAEM 0 AN MOD OF itemIdx AN 1, O RLY?
-		YA RLY, VISIBLE itemIdx
-	OIC
-		I HAS A item ITZ table'Z SRS itemIdx
-		I HAS A distanceNTuple ITZ A BUKKIT
-		distanceNTuple HAS A coords1 ITZ A BUKKIT
-		distanceNTuple'Z coords1 HAS A SRS 0 ITZ item'Z SRS 0
-		distanceNTuple'Z coords1 HAS A SRS 1 ITZ item'Z SRS 1
-		distanceNTuple'Z coords1 HAS A SRS 2 ITZ item'Z SRS 2
-		distanceNTuple HAS A coords2 ITZ A BUKKIT
-		distanceNTuple'Z coords2 HAS A SRS 0 ITZ item'Z SRS 3
-		distanceNTuple'Z coords2 HAS A SRS 1 ITZ item'Z SRS 4
-		distanceNTuple'Z coords2 HAS A SRS 2 ITZ item'Z SRS 5
-		distanceNTuple HAS A distance ITZ item'Z SRS 6
-		BTW Add to DistanceLookup
-		distanceLookup HAS A SRS distanceLookup'Z SIZE ITZ distanceNTuple
-		distanceLookup'Z SIZE R SUM OF distanceLookup'Z SIZE AN 1
-	IM OUTTA YR itemLoop
-IF U SAY SO
 
 VISIBLE "Parsing input..."
 I HAS A KOORDINATEZ ITZ I IZ READIN_CSV YR contents MKAY
+OBTW
+	So KOORDINATEZ is structured as follows:
+	It is a integer-indexed dictionary, so the keys are 0...n 
+	where n+1 is the number of coordinates in the input data.
+	So KOORDINATEZ'Z SRS 0 gives a BUKKIT containing the first set of coordinates.
+	The coordinates inside the BUKKIT are also stored numerically. 
+	So say for some input of coordinates (x,y,z):
+		I HAS A coords0 ITZ KOORDINATEZ'Z SRS 0:
+		coords0'Z 0 = x
+		coords0'Z 1 = y
+		coords0'Z 2 = z
+
+TLDR
 VISIBLE "... finished parsing."
 
 BTW Calculating the distance between each pair of junction boxes - this takes several hours ---------------------------------------------------------------------
@@ -344,6 +319,47 @@ O HAI IM distanceLookup
 
 KTHX
 
+HOW IZ I READ_DISTANCE_CSV YR filename
+	BTW Read cached values instead
+	BTW Open file
+	VISIBLE "Attempting to read file..."
+	I HAS A newReadFile ITZ I IZ STDIO'Z OPEN YR filename AN YR "r" MKAY
+	I IZ STDIO'Z DIAF YR newReadFile MKAY
+	O RLY?
+		YA RLY, VISIBLE "Failed to open file for reading"
+		NO WAI, VISIBLE "Successfully opened the file for reading"
+	OIC
+
+	BTW Assign the whole contents of the file to a YARN
+	I HAS A lookupCsvYarn ITZ I IZ STDIO'Z LUK YR newReadFile AN YR 99999999999 MKAY
+	I IZ STDIO'Z CLOSE YR newReadFile MKAY
+
+	BTW Get the number of chars in the file for later parsing
+	I HAS A endLoop ITZ I IZ STRING'Z LEN YR lookupCsvYarn MKAY 
+	VISIBLE "File size (chars):: " AN endLoop
+
+	BTW Turn back into a distanceLookup
+	I HAS A table ITZ I IZ READIN_CSV YR lookupCsvYarn MKAY
+	IM IN YR itemLoop UPPIN YR itemIdx TIL BOTH SAEM itemIdx AN table'Z SIZE
+		BOTH SAEM 0 AN MOD OF itemIdx AN 1, O RLY?
+			YA RLY, VISIBLE itemIdx
+		OIC
+		I HAS A item ITZ table'Z SRS itemIdx
+		I HAS A distanceNTuple ITZ A BUKKIT
+		distanceNTuple HAS A coords1 ITZ A BUKKIT
+		distanceNTuple'Z coords1 HAS A SRS 0 ITZ item'Z SRS 0
+		distanceNTuple'Z coords1 HAS A SRS 1 ITZ item'Z SRS 1
+		distanceNTuple'Z coords1 HAS A SRS 2 ITZ item'Z SRS 2
+		distanceNTuple HAS A coords2 ITZ A BUKKIT
+		distanceNTuple'Z coords2 HAS A SRS 0 ITZ item'Z SRS 3
+		distanceNTuple'Z coords2 HAS A SRS 1 ITZ item'Z SRS 4
+		distanceNTuple'Z coords2 HAS A SRS 2 ITZ item'Z SRS 5
+		distanceNTuple HAS A distance ITZ item'Z SRS 6
+		BTW Add to DistanceLookup
+		distanceLookup HAS A SRS distanceLookup'Z SIZE ITZ distanceNTuple
+		distanceLookup'Z SIZE R SUM OF distanceLookup'Z SIZE AN 1
+	IM OUTTA YR itemLoop
+IF U SAY SO
 
 OBTW
 Step 1: Populate distance lookup
@@ -552,7 +568,6 @@ HOW IZ I SORTIN YR bukkitOfNumbrz
 IF U SAY SO
 
 BTW Sort the distanceLookup table and write out the sorted values, or read in the sorted values
-I HAS A sortedFilename ITZ SMOOSH FILENAME AN "_sorted" MKAY
 sortDistanceLookup, O RLY?
 	YA RLY
 		VISIBLE "Sorting the lookup table"
@@ -652,6 +667,9 @@ IM OUTTA YR countLoop
 
 
 VISIBLE "... finished computing."
+VISIBLE largestCircuitSize
+VISIBLE secondLargestCircuitSize
+VISIBLE thirdLargestCircuitSize
 
 VISIBLE "Answer:: " AN PRODUKT OF PRODUKT OF largestCircuitSize AN secondLargestCircuitSize AN thirdLargestCircuitSize
 
