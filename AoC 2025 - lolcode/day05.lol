@@ -81,7 +81,6 @@ CAN HAS STRING?
 
         BTW Loop through the yarn, splitting it by the delimiter
         IM IN YR readLoop UPPIN YR idx TIL BOTH SAEM idx AN yarnSize
-        BTW VISIBLE "readloop idx:: " AN idx
             I HAS A char ITZ I IZ STRING'Z AT YR yarn AN YR idx MKAY
             BOTH SAEM char AN delimiter, O RLY?
                 YA RLY
@@ -136,7 +135,6 @@ CAN HAS STRING?
                         I HAS A delimitedLine ITZ I IZ READIN YR LINEZ'Z SRS lineNumber AN YR "-" MKAY
                         delimitedLine'Z SRS 0 IS NOW A NUMBR
                         delimitedLine'Z SRS 1 IS NOW A NUMBR
-                        VISIBLE delimitedLine'Z SRS 0 AN "--" AN delimitedLine'Z SRS 1
                         I IZ ADDIN YR delimitedLine AN YR RANGEZ MKAY
                 OIC
         OIC
@@ -146,12 +144,10 @@ CAN HAS STRING?
         OBTW
             Checks if the numbr is in any of the ranges
         TLDR
-        VISIBLE "IS_IN_RANGES - " AN numbr
         IM IN YR rangeLoop UPPIN YR rangeID TIL BOTH SAEM rangeID AN RANGEZ'Z SIZE
             I HAS A range ITZ RANGEZ'Z SRS rangeID
             I HAS A lowerLimit ITZ range'Z SRS 0
             I HAS A upperLimit ITZ range'Z SRS 1
-            VISIBLE lowerLimit AN " - " AN upperLimit
             BOTH OF BOTH SAEM lowerLimit AN SMALLR OF numbr AN lowerLimit AN BOTH SAEM upperLimit AN BIGGR OF numbr AN upperLimit, O RLY?
                 YA RLY, FOUND YR WIN
             OIC
