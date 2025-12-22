@@ -13,7 +13,7 @@ CAN HAS STRING?
 
 	BTW Open file
 	VISIBLE "Attempting to read file..."
-	I HAS A readFile ITZ I IZ STDIO'Z OPEN YR "TREATZ/5" AN YR "r" MKAY
+	I HAS A readFile ITZ I IZ STDIO'Z OPEN YR "NOMNOMZ/5" AN YR "r" MKAY
 	I IZ STDIO'Z DIAF YR readFile MKAY
 	O RLY?
 		YA RLY, VISIBLE "Failed to open file for reading"
@@ -25,7 +25,7 @@ CAN HAS STRING?
 	I IZ STDIO'Z CLOSE YR readFile MKAY
 
 	BTW Get the number of chars in the file for later parsing
-	I HAS A endLoop ITZ I IZ STRING'Z SIZE YR contents MKAY 
+	I HAS A endLoop ITZ I IZ STRING'Z LEN YR contents MKAY 
 	VISIBLE "File size (chars):: " AN endLoop
 
     HOW IZ I charIsNumeric YR char
@@ -62,7 +62,7 @@ CAN HAS STRING?
             This function separates a YARN into a numerically indexed BUKKIT of YARNs using a delimiter.
         TLDR
         
-        I HAS A yarnSize ITZ I IZ STRING'Z SIZE YR yarn MKAY
+        I HAS A yarnSize ITZ I IZ STRING'Z LEN YR yarn MKAY
         OBTW 
             Put a delimiter on the end of the yarn if it's not there.
             This ensures whatever's left in the buffer at the end is assigned 
@@ -136,6 +136,7 @@ CAN HAS STRING?
                         I HAS A delimitedLine ITZ I IZ READIN YR LINEZ'Z SRS lineNumber AN YR "-" MKAY
                         delimitedLine'Z SRS 0 IS NOW A NUMBR
                         delimitedLine'Z SRS 1 IS NOW A NUMBR
+                        VISIBLE delimitedLine'Z SRS 0 AN "--" AN delimitedLine'Z SRS 1
                         I IZ ADDIN YR delimitedLine AN YR RANGEZ MKAY
                 OIC
         OIC
@@ -145,23 +146,22 @@ CAN HAS STRING?
         OBTW
             Checks if the numbr is in any of the ranges
         TLDR
+        VISIBLE "IS_IN_RANGES - " AN numbr
         IM IN YR rangeLoop UPPIN YR rangeID TIL BOTH SAEM rangeID AN RANGEZ'Z SIZE
-            I HAS A range ITZ RANGEZ'Z rangeID
+            I HAS A range ITZ RANGEZ'Z SRS rangeID
             I HAS A lowerLimit ITZ range'Z SRS 0
             I HAS A upperLimit ITZ range'Z SRS 1
-            BOTH SAEM numbr AN SMALLR OF numbr AN range'Z SRS 0, O RLY?
-                YA RLY, FOUND YR FAIL
+            VISIBLE lowerLimit AN " - " AN upperLimit
+            BOTH OF BOTH SAEM lowerLimit AN SMALLR OF numbr AN lowerLimit AN BOTH SAEM upperLimit AN BIGGR OF numbr AN upperLimit, O RLY?
+                YA RLY, FOUND YR WIN
             OIC
-            BOTH SAEM numbr AN BIGGR OF numbr AN range'Z SRS 1, O RLY?
-                YA RLY, FOUND YR FAIL
-            OIC
-            FOUND YR WIN
-        IM OUTTA YR readLoop
+        IM OUTTA YR rangeLoop
+        FOUND YR FAIL
     IF U SAY SO
 
     I HAS A countFreshNomz ITZ 0
     IM IN YR nomzLoop UPPIN YR nomnum TIL BOTH SAEM nomnum AN NOMZ'Z SIZE
-        I IZ IS_IN_RANGES YR NOMZ'Z nomnum MKAYm O RLY?
+        I IZ IS_IN_RANGES YR NOMZ'Z SRS nomnum MKAY, O RLY?
             YA RLY, countFreshNomz R SUM OF countFreshNomz AN 1
         OIC
     IM OUTTA YR nomzLoop
