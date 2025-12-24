@@ -40,6 +40,10 @@ HAI 1.3
     OBTW General syntax notes
     - Whitespace does not matter but it's polite to indent
     - Escape character is colon
+    - You can use a comma instead of a new line. Stylistic uses include:
+        - <TRUE_OR_FALSE_STATEMENT>, O RLY?
+        - YA RLY, <SIMPLE_ACTION>
+        - NO WAI, <SIMPLE_ACTION>
     - "IT" is whatever value was last produced but not assigned to anything, e.g.
         SUM OF 5 AN 5
         VISIBLE IT          BTW prints 10
@@ -55,6 +59,7 @@ HAI 1.3
             ME IZ addin YR 12 AN YR 42  BTW to call a function defined for the BUKKIT
     - Generally statements go on one line, but you can use a comma to put more than one statement on a line:
     (Each VISIBLE command prints on a new line)
+    - If you see IZ in the code, it's a function call of the form <calling-object> IZ <function>
     TLDR
     VISIBLE "Look here's something:: ", I HAS A x ITZ 23, VISIBLE x
 
