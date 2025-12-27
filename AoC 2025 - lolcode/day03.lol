@@ -98,9 +98,65 @@ IM IN YR bankLoop UPPIN YR bankIdx TIL BOTH SAEM bankIdx AN bankSize
     I HAS A largestJoltage ITZ SMOOSH largestFirstDigit AN largestSecondDigit MKAY
     largestJoltage IS NOW A NUMBR
     total R SUM OF total AN largestJoltage
-    VISIBLE largestFirstDigit AN largestSecondDigit
 IM OUTTA YR bankLoop
 VISIBLE "... finished computing."
 VISIBLE "Part 1 answer: " AN total
+
+OBTW
+Part 2: Instead of selecting two batteries in each bank, select twelve.
+TLDR
+
+I HAS A total2 ITZ 0
+
+HOW IZ I CREATE_EMPTY YR bukkitLength
+    OBTW
+        Creates a new BUKKIT with a given number of enumerated empty slots
+        bukkitLength: the number of empty slots to create
+    TLDR
+    I HAS A output ITZ A BUKKIT
+    output HAS A SIZE ITZ bukkitLength
+    IM IN YR slotLoop UPPIN YR idx TIL BOTH SAEM idx AN bukkitLength
+        output HAS A SRS idx ITZ 0        BTW Each slot has value 0 to start
+    IM OUTTA YR slotLoop
+    FOUND YR output
+IF U SAY SO
+
+HOW IZ I CHOOSIN YR batteryBank
+    I HAS A largestDigits ITZ I IZ CREATE_EMPTY YR 12 MKAY
+    I HAS A chosenDigitIndices ITZ I IZ CREATE_EMPTY YR 12 MKAY
+    chosenDigitIndices HAS A SRS -1 ITZ -1
+
+    IM IN YR chooseLoop UPPIN YR chooseIdx TIL BOTH SAEM chooseIdx AN 12
+        I HAS A remainingDigitsCount ITZ DIFF OF 12 AN chooseIdx
+        I HAS A previousDigitIdx ITZ chosenDigitIndices'Z SRS DIFF OF chooseIdx AN 1
+        I HAS A range ITZ DIFF OF batteryNumber AN SUM OF previousDigitIdx AN remainingDigitsCount
+        BTW for each bank of batteries, loop through the batteries - first to find the first instance of the largest joltage in the bank
+        IM IN YR batteryLoop UPPIN YR idx TIL BOTH SAEM idx AN range
+            I HAS A batteryIdx ITZ SUM OF SUM OF previousDigitIdx AN idx AN 1
+            I HAS A joltage ITZ batteryBank'Z SRS batteryIdx
+            DIFFRINT largestDigits'Z SRS chooseIdx AN BIGGR OF largestDigits'Z SRS chooseIdx AN joltage, O RLY?
+                YA RLY
+                    largestDigits'Z SRS chooseIdx R joltage
+                    chosenDigitIndices'Z SRS chooseIdx R batteryIdx
+            OIC
+        IM OUTTA YR batteryLoop
+    IM OUTTA YR chooseLoop
+
+    I HAS A numbr ITZ ""
+    IM IN YR batteryLoop UPPIN YR idx TIL BOTH SAEM idx AN 12
+        numbr R SMOOSH numbr AN largestDigits'Z SRS idx MKAY
+    IM OUTTA YR batteryLoop
+
+    numbr IS NOW A NUMBR
+    total2 R SUM OF total2 AN numbr
+IF U SAY SO
+
+IM IN YR bankLoop UPPIN YR bankNum TIL BOTH SAEM bankNum AN bankSize
+    I IZ CHOOSIN YR banks'Z SRS bankNum MKAY
+IM OUTTA YR bankLoop
+VISIBLE "... finished computing."
+VISIBLE "Part 2 answer: " AN total2
+
+
 VISIBLE "Finished."
 KTHXBYE
