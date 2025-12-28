@@ -121,23 +121,61 @@ HOW IZ I countNeighbours YR row AN YR col
     FOUND YR paperCount
 IF U SAY SO
 
-I HAS A countAccessiblePaper ITZ 0
 VISIBLE "Computing..."
-IM IN YR rowLoop UPPIN YR rowIdx TIL BOTH SAEM rowIdx AN rows
-    IM IN YR colLoop UPPIN YR colIdx TIL BOTH SAEM colIdx AN cols
-        I HAS A thisRow ITZ diagram'Z SRS rowIdx
-        I IZ isPaper YR thisRow'Z SRS colIdx MKAY, O RLY?
-            YA RLY
-                I HAS A countAllPaper ITZ I IZ countNeighbours YR rowIdx AN YR colIdx MKAY
-                DIFFRINT countAllPaper AN BIGGR OF countAllPaper AN 4, O RLY?
-                    YA RLY
-                        countAccessiblePaper R SUM OF countAccessiblePaper AN 1
-                OIC
-        OIC
-        
-    IM OUTTA YR colLoop
-IM OUTTA YR rowLoop
-VISIBLE "Accessible paper count: " AN countAccessiblePaper
+HOW IZ I COUNT_ACCESSIBLE_PAPER
+    I HAS A countAccessiblePaper ITZ 0
+    IM IN YR rowLoop UPPIN YR rowIdx TIL BOTH SAEM rowIdx AN rows
+        IM IN YR colLoop UPPIN YR colIdx TIL BOTH SAEM colIdx AN cols
+            I HAS A thisRow ITZ diagram'Z SRS rowIdx
+            I IZ isPaper YR thisRow'Z SRS colIdx MKAY, O RLY?
+                YA RLY
+                    I HAS A countAllPaper ITZ I IZ countNeighbours YR rowIdx AN YR colIdx MKAY
+                    DIFFRINT countAllPaper AN BIGGR OF countAllPaper AN 4, O RLY?
+                        YA RLY
+                            countAccessiblePaper R SUM OF countAccessiblePaper AN 1
+                    OIC
+            OIC
+            
+        IM OUTTA YR colLoop
+    IM OUTTA YR rowLoop
+    FOUND YR countAccessiblePaper
+IF U SAY SO
+VISIBLE "Accessible paper count: " AN I IZ COUNT_ACCESSIBLE_PAPER MKAY
 VISIBLE "... finished computing."
+
+OBTW Part 2 - remove accessible paper until no more can be removed TLDR
+
+VISIBLE "Removing accessible paper..."
+HOW IZ I REMOVE_ACCESSIBLE_PAPER
+    I HAS A foundAccessiblePaper ITZ FAIL
+    IM IN YR rowLoop UPPIN YR rowIdx TIL BOTH SAEM rowIdx AN rows
+        IM IN YR colLoop UPPIN YR colIdx TIL BOTH SAEM colIdx AN cols
+            I HAS A thisRow ITZ diagram'Z SRS rowIdx
+            I IZ isPaper YR thisRow'Z SRS colIdx MKAY, O RLY?
+                YA RLY
+                    I HAS A countAllPaper ITZ I IZ countNeighbours YR rowIdx AN YR colIdx MKAY
+                    DIFFRINT countAllPaper AN BIGGR OF countAllPaper AN 4, O RLY?
+                        YA RLY
+                            foundAccessiblePaper R WIN
+                            thisRow'Z SRS colIdx R "."
+                            removeCount R SUM OF removeCount AN 1
+                    OIC
+            OIC
+            
+        IM OUTTA YR colLoop
+    IM OUTTA YR rowLoop
+    FOUND YR foundAccessiblePaper
+IF U SAY SO
+
+I HAS A finished ITZ FAIL
+I HAS A removeCount ITZ 0
+IM IN YR removingPaperLoop UPPIN YR idx TIL BOTH SAEM finished AN WIN
+    finished R NOT I IZ REMOVE_ACCESSIBLE_PAPER MKAY
+IM OUTTA YR removingPaperLoop
+
+VISIBLE "Removed paper count: " AN removeCount
+VISIBLE "... finished computing."
+
+
 VISIBLE "Finished."
 KTHXBYE
